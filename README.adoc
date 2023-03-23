@@ -1,0 +1,57 @@
+
+= rust-stm32-playground =
+
+[WARNING]
+.STMF446RE
+====
+This project is configured for the STMF446RE. If you are using another MCU and board please review all parameters and configure properly.
+====
+
+== Toolchain ==
+
+.Install rustup
+[source, bash]
+----
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+----
+
+.Install Rust toolchain and ARM target.
+[source, bash]
+----
+rustup update
+rustup target add thumbv7em-none-eabihf
+----
+
+.Install cargo-flash.
+[source, bash]
+----
+cargo install cargo-flash
+----
+
+== udev ==
+
+. Install libudev `sudo apt install libudev-dev`.
+. Download the file https://probe.rs/files/69-probe-rs.rules[69-probe-rs.rules] and place it in `/etc/udev/rules.d`.
+. Run udevadm control --reload to ensure the new rules are used.
+. Run udevadm trigger to ensure the new rules are applied to already added devices.
+
+== Compile and Flash ==
+
+.Install cargo-flash.
+[source, bash]
+----
+cargo flash --chip stm32f446re --release
+----
+
+== References ==
+https://medium.com/digitalfrontiers/rust-on-a-stm32-microcontroller-90fac16f6342[Rust on an STM32 microcontroller by Marco Amann]
+
+https://jonathanklimt.de/electronics/programming/embedded-rust/rust-on-stm32-2/[Rust on STM32: Getting started by Jonathan Klimt]
+
+https://www.st.com/content/ccc/resource/technical/document/user_manual/98/2e/fa/4b/e0/82/43/b7/DM00105823.pdf/files/DM00105823.pdf/jcr:content/translations/en.DM00105823.pdf[STM32 Nucleo-64 User manual]
+
+https://www.st.com/resource/en/reference_manual/rm0390-stm32f446xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf[STM32F446 Reference manual]
+
+https://www.st.com/resource/en/programming_manual/pm0214-stm32-cortexm4-mcus-and-mpus-programming-manual-stmicroelectronics.pdf[STM32 Cortex-M4 Programming manual]
+
+https://github.com/orgs/stm32-rs/[stm32-rs]
