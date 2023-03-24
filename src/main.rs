@@ -2,13 +2,15 @@
 #![no_std]
 
 use core::cell::RefCell;
-use core::sync::atomic::{AtomicU16, AtomicU32, Ordering};
-use cortex_m::asm::wfi;
-use cortex_m::interrupt::Mutex;
-use panic_halt as _; // halt on panic
+use core::sync::atomic::{AtomicU16, Ordering};
 
+use cortex_m::interrupt::Mutex;
 use cortex_m_rt::entry;
 
+#[allow(unused_imports)]
+use panic_halt as _; // halt on panic
+
+use rtt_target::{rprintln, rtt_init_print};
 use stm32f4xx_hal::{interrupt, pac, prelude::*};
 use stm32f4xx_hal::gpio::{Edge, Input, PC13};
 
@@ -25,6 +27,8 @@ fn main() -> ! {
         pac::Peripherals::take(),
         cortex_m::Peripherals::take()
     ) {
+        rtt_init_print!();
+
         let mut device = device;
         let mut sys_cfg = device.SYSCFG.constrain();
         let rcc = device.RCC.constrain();
@@ -76,4 +80,6 @@ fn EXTI15_10() {
     });
 
     COUNTER.fetch_add(1, Ordering::SeqCst);
+
+    rprintln!("Button pressed.");
 }

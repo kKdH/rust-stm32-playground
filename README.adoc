@@ -22,26 +22,49 @@ rustup update
 rustup target add thumbv7em-none-eabihf
 ----
 
-.Install cargo-flash.
+Some additional tools:
+
+. https://github.com/probe-rs/probe-rs/tree/master/cargo-flash[cargo-flash] - This crate provides a cargo subcommand to flash ELF binaries onto ARM chips.
+. https://github.com/probe-rs/probe-rs/tree/master/cargo-embed[cargo-embed] - Provides a cargo subcommand to work with embedded targets.
+. https://github.com/rust-embedded/cargo-binutils[cargo-binutils] - Cargo subcommands to invoke the LLVM tools shipped with the Rust toolchain.
+
+.Install some additional useful tools.
 [source, bash]
 ----
-cargo install cargo-flash
+cargo install cargo-flash cargo-embed cargo-binutils
 ----
 
-== udev ==
+=== udev ===
 
 . Install libudev `sudo apt install libudev-dev`.
 . Download the file https://probe.rs/files/69-probe-rs.rules[69-probe-rs.rules] and place it in `/etc/udev/rules.d`.
 . Run udevadm control --reload to ensure the new rules are used.
 . Run udevadm trigger to ensure the new rules are applied to already added devices.
 
-== Compile and Flash ==
+== Flash ==
 
-.Install cargo-flash.
+.Flash binary to target.
 [source, bash]
 ----
 cargo flash --chip stm32f446re --release
 ----
+
+== Debug ==
+
+. Create a Run/Debug configuration in CLion.
++
+image::misc/clion-configure-remote-debug.png[]
+
+. Build and flash the binary (debug build) to target and open RTT and GDB.
++
+[source, bash]
+----
+cargo embed --chip stm32f446re
+----
+
+. Start the configured debugging session in CLion by pressing the little 'bug' button.
++
+image::misc/clion-run-remote-debug.png[]
 
 == References ==
 https://medium.com/digitalfrontiers/rust-on-a-stm32-microcontroller-90fac16f6342[Rust on an STM32 microcontroller by Marco Amann]
