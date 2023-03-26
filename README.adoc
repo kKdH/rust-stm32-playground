@@ -7,6 +7,12 @@
 This project is configured for the STMF446RE. If you are using another MCU and board please review all parameters and configure properly.
 ====
 
+== Ecosystem ==
+
+.Embedded Rust ecosystem for STM32 <<_4,[4]>>
+image::misc/embedded_rust_eco.png[]
+
+
 == Toolchain ==
 
 .Install rustup
@@ -67,14 +73,19 @@ cargo embed --chip stm32f446re
 image::misc/clion-run-remote-debug.png[]
 
 == References ==
-https://medium.com/digitalfrontiers/rust-on-a-stm32-microcontroller-90fac16f6342[Rust on an STM32 microcontroller by Marco Amann]
 
-https://jonathanklimt.de/electronics/programming/embedded-rust/rust-on-stm32-2/[Rust on STM32: Getting started by Jonathan Klimt]
+[[_1]] [1] https://github.com/rust-embedded/awesome-embedded-rust[Curated list of awesome embedded Rust resources]
 
-https://www.st.com/content/ccc/resource/technical/document/user_manual/98/2e/fa/4b/e0/82/43/b7/DM00105823.pdf/files/DM00105823.pdf/jcr:content/translations/en.DM00105823.pdf[STM32 Nucleo-64 User manual]
+[[_2]] [2] https://medium.com/digitalfrontiers/rust-on-a-stm32-microcontroller-90fac16f6342[Rust on an STM32 microcontroller by Marco Amann]
 
-https://www.st.com/resource/en/reference_manual/rm0390-stm32f446xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf[STM32F446 Reference manual]
+[[_3]] [3] https://jonathanklimt.de/electronics/programming/embedded-rust/rust-on-stm32-2/[Rust on STM32: Getting started by Jonathan Klimt]
 
-https://www.st.com/resource/en/programming_manual/pm0214-stm32-cortexm4-mcus-and-mpus-programming-manual-stmicroelectronics.pdf[STM32 Cortex-M4 Programming manual]
+[[_4]] [4] https://craigjb.com/2019/12/31/stm32l0-rust/[STM32L0 Rust Part 1 - Getting Started by Craig Bishop]
 
-https://github.com/orgs/stm32-rs/[stm32-rs]
+[[_5]] [5] https://apollolabsblog.hashnode.dev/series/stm32f4-embedded-rust-hal[STM32F4 with Embedded Rust at the HAL]
+
+[[_6]] [6] https://www.st.com/content/ccc/resource/technical/document/user_manual/98/2e/fa/4b/e0/82/43/b7/DM00105823.pdf/files/DM00105823.pdf/jcr:content/translations/en.DM00105823.pdf[STM32 Nucleo-64 User manual]
+
+[[_7]] [7] https://www.st.com/resource/en/reference_manual/rm0390-stm32f446xx-advanced-armbased-32bit-mcus-stmicroelectronics.pdf[STM32F446 Reference manual]
+
+[[_8]] [8] https://www.st.com/resource/en/programming_manual/pm0214-stm32-cortexm4-mcus-and-mpus-programming-manual-stmicroelectronics.pdf[STM32 Cortex-M4 Programming manual]
