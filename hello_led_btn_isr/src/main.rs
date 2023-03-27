@@ -7,13 +7,12 @@ use core::sync::atomic::{AtomicU16, Ordering};
 use cortex_m::interrupt::Mutex;
 use cortex_m_rt::entry;
 
-#[allow(unused_imports)]
-use panic_halt as _; // halt on panic
-
 use rtt_target::{rprintln, rtt_init_print};
 use stm32f4xx_hal::{interrupt, pac, prelude::*};
 use stm32f4xx_hal::gpio::{Edge, Input, PC13};
 
+#[allow(unused_imports)]
+use panic_halt as _;
 
 type Button = PC13<Input>;
 
