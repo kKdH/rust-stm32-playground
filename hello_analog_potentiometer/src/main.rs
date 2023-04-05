@@ -29,13 +29,6 @@ fn main() -> ! {
 
 
     loop {
-        if tracker.is_high() {
-            rprintln!("tracker is on line")
-        }
-        else {
-            rprintln!("tracker is not on line")
-        }
 
-        delay.delay_ms(500u32)
     }
 }

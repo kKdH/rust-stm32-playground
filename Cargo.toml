@@ -9,5 +9,6 @@ members = [
     "hello_spi",
     "hello_led",
     "hello_srf05",
-    "hello_tracker"
+    "hello_tracker",
+    "hello_analog_potentiometer"
 ]
