@@ -12,6 +12,18 @@ This project is configured for the STMF446RE. If you are using another MCU and b
 .Embedded Rust ecosystem for STM32 <<_4,[4]>>
 image::misc/embedded_rust_eco.png[]
 
+=== System packages and preparation ===
+
+==== pkg-conf ====
+
+Install pkg-conf `sudo apt install pkg-config`
+
+==== udev ====
+
+. Install libudev `sudo apt install libudev-dev`.
+. Download the file https://probe.rs/files/69-probe-rs.rules[69-probe-rs.rules] and place it in `/etc/udev/rules.d`.
+. Run `sudo udevadm control --reload` to ensure the new rules are used.
+. Run `sudo udevadm trigger` to ensure the new rules are applied to already added devices.
 
 == Toolchain ==
 
@@ -39,13 +51,6 @@ Some additional tools:
 ----
 cargo install cargo-flash cargo-embed cargo-binutils
 ----
-
-=== udev ===
-
-. Install libudev `sudo apt install libudev-dev`.
-. Download the file https://probe.rs/files/69-probe-rs.rules[69-probe-rs.rules] and place it in `/etc/udev/rules.d`.
-. Run udevadm control --reload to ensure the new rules are used.
-. Run udevadm trigger to ensure the new rules are applied to already added devices.
 
 == Flash ==
 
