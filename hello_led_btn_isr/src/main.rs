@@ -9,6 +9,7 @@ use cortex_m_rt::entry;
 
 use rtt_target::{rprintln, rtt_init_print};
 use stm32f4xx_hal::{interrupt, pac, prelude::*};
+use stm32f4xx_hal::timer::{CounterMs, Event};
 use stm32f4xx_hal::gpio::{Edge, Input, PC13};
 
 #[allow(unused_imports)]

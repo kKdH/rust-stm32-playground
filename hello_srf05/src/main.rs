@@ -7,7 +7,7 @@ use cortex_m_rt::entry;
 
 use panic_halt as _;
 use rtt_target::{rprintln, rtt_init_print};
-
+use stm32f4xx_hal::timer::{CounterMs, Event};
 use stm32f4xx_hal::prelude::*;
 
 
@@ -37,31 +37,24 @@ fn main() -> ! {
     rprintln!("Starting to blink");
 
     let sampling_rate: u32 = 5;
-    let mut measuring: bool = false;
-    let mut counter: u32 = 0;
+    let mut delay = device.TIM1.delay_us(&clocks);
+    let mut counter = device.TIM2.counter_us(&clocks);
 
     loop {
 
-        if measuring == false {
-            trigger.set_high();
-            delay.delay_us(20u32);
-            trigger.set_low();
-            measuring = true;
-        }
+        trigger.set_high();
+        delay.delay_us(20u32);
+        trigger.set_low();
 
-        if measuring && echo.is_high() {
-            counter += 1;
-        }
+        while echo.is_low() {}
+        counter.start(1000.millis()).unwrap();
+        while echo.is_high() {}
 
-        if echo.is_low() && counter > 0 {
-            let distance_in_time: f64 = (counter * sampling_rate) as f64 / 1000000.0;
-            let distance = (343.0 * distance_in_time) / 2.0;
-            rprintln!("distance: {}", distance);
-            measuring = false;
-            counter = 0;
-            delay.delay_ms(1000u32)
-        }
+        let duration = counter.now().duration_since_epoch();
+        counter.cancel().unwrap();
+        let distance_cm = duration.to_micros() / 2 / 29;
+        rprintln!("distance: {}", distance_cm);
 
-        delay.delay_us(sampling_rate)
+        delay.delay_ms(1000u32)
     }
 }
