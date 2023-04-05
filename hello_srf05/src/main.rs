@@ -23,15 +23,13 @@ fn main() -> ! {
     let rcc = device.RCC.constrain();
     let clocks = rcc.cfgr.sysclk(84.MHz()).freeze();
 
-    let gpio_a = device.GPIOA.split();
+    let gpio_b = device.GPIOB.split();
+    let gpio_c = device.GPIOC.split();
 
-    let gpio_d = device.GPIOD.split();
-
-    let mut led = gpio_a.pa5.into_push_pull_output();
     let mut delay = core.SYST.delay(&clocks);
 
-    let mut trigger = gpio_a.pa0.into_push_pull_output();
-    let mut echo = gpio_a.pa1.into_pull_down_input();
+    let mut trigger = gpio_b.pb6.into_push_pull_output();
+    let mut echo = gpio_c.pc7.into_pull_down_input();
 
 
     rprintln!("Starting to blink");

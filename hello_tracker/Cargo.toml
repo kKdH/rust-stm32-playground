@@ -1,5 +1,5 @@
 [package]
-name = "hello_srf05"
+name = "hello_tracker"
 version = "0.1.0"
 edition = "2021"
 

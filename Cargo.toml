@@ -8,5 +8,6 @@ members = [
     "hello_led_btn_isr",
     "hello_spi",
     "hello_led",
-    "hello_srf05"
+    "hello_srf05",
+    "hello_tracker"
 ]
