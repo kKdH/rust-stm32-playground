@@ -21,17 +21,18 @@ fn main() -> ! {
 
     let mut sys_cfg = device.SYSCFG.constrain();
     let rcc = device.RCC.constrain();
-    let clocks = rcc.cfgr.sysclk(84.MHz()).freeze();
+    let clocks = rcc.cfgr.freeze();
 
     let gpio_a = device.GPIOA.split();
 
     let mut led = gpio_a.pa5.into_push_pull_output();
-    let mut delay = core.SYST.delay(&clocks);
+    let mut delay = device.TIM1.delay_us(&clocks);
 
     rprintln!("Starting to blink");
 
     loop {
         led.toggle();
-        delay.delay_ms(75u8);
+        delay.delay_ms(1000u32);
+        rprintln!("blink");
     }
 }
