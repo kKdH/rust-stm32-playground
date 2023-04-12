@@ -1,5 +1,5 @@
 [package]
-name = "hello_spi"
+name = "hello_spi_display"
 version = "0.1.0"
 edition.workspace = true
 

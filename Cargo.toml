@@ -7,8 +7,19 @@ edition = "2021"
 members = [
     "hello_led_btn_isr",
     "hello_spi",
+    "hello_spi_display",
     "hello_led",
     "hello_srf05",
     "hello_tracker",
     "hello_analog_potentiometer"
 ]
+
+[workspace.package]
+edition = "2021"
+
+[workspace.dependencies]
+cortex-m = "0.7.7"
+cortex-m-rt = "0.7.3"
+panic-halt = "0.2.0"
+rtt-target = { version = "0.3.1", features = ["cortex-m"]  } # versions > 0.3.1 seam broken
+stm32f4xx-hal = { version = "0.15.0", features = ["rt", "stm32f446"] }

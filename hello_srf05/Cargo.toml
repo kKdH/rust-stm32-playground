@@ -1,11 +1,11 @@
 [package]
 name = "hello_srf05"
 version = "0.1.0"
-edition = "2021"
+edition.workspace = true
 
 [dependencies]
-cortex-m = "0.7.7"
-cortex-m-rt = "0.7.3"
-panic-halt = "0.2.0"
-rtt-target = { version = "0.3.1", features = ["cortex-m"]  } # versions > 0.3.1 seam broken
-stm32f4xx-hal = { version = "0.15.0", features = ["rt", "stm32f446"] }
+cortex-m.workspace = true
+cortex-m-rt.workspace = true
+panic-halt.workspace = true
+rtt-target = { workspace = true, features = ["cortex-m"]  }
+stm32f4xx-hal = { workspace = true, features = ["rt", "stm32f446"] }

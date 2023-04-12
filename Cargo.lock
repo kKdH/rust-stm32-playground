@@ -165,6 +165,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "hello_spi_display"
+version = "0.1.0"
+dependencies = [
+ "cortex-m",
+ "cortex-m-rt",
+ "panic-halt",
+ "rtt-target",
+ "stm32f4xx-hal",
+]
+
+[[package]]
 name = "hello_srf05"
 version = "0.1.0"
 dependencies = [
