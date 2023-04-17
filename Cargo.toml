@@ -11,7 +11,8 @@ members = [
     "hello_led",
     "hello_srf05",
     "hello_tracker",
-    "hello_analog_potentiometer"
+    "hello_analog_potentiometer",
+    "hello_rotary_encoder"
 ]
 
 [workspace.package]
