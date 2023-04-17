@@ -54,6 +54,7 @@ fn main() -> ! {
 
         if button.is_low() {
             counter = 0;
+            rprintln!("{:?}", counter);
         }
 
         match state {
@@ -79,6 +80,7 @@ fn main() -> ! {
                 if pin_clk.is_high() && pin_dt.is_high() {
                     state = RotaryEncoderStates::Idle;
                     counter += 1;
+                    rprintln!("{:?}", counter);
                 }
             }
             RotaryEncoderStates::AnticlockwiseDTFirst => {
@@ -95,12 +97,9 @@ fn main() -> ! {
                 if pin_dt.is_high() && pin_clk.is_high() {
                     state = RotaryEncoderStates::Idle;
                     counter -= 1;
+                    rprintln!("{:?}", counter);
                 }
             }
         }
-
-        rprintln!("{:?}", counter);
-
-        //delay.delay_ms(10u32)
     }
 }
