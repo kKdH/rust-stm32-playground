@@ -24,7 +24,7 @@ fn main() -> ! {
 
         let sys_cfg = device_peripherals.SYSCFG.constrain();
         let rcc = device_peripherals.RCC.constrain();
-        let clocks = rcc.cfgr.freeze();
+        let clocks = rcc.cfgr.sysclk(16.MHz()).freeze();
 
         let mut delay = device_peripherals.TIM1.delay_us(&clocks);
 
@@ -34,8 +34,7 @@ fn main() -> ! {
 
         let mut spi_clock = gpio_a.pa5
             .into_alternate::<5>()
-            .speed(Speed::VeryHigh)
-            .internal_pull_up(true);
+            .speed(Speed::VeryHigh);
 
         let spi_miso = gpio_a.pa6
             .into_alternate::<5>()
@@ -50,70 +49,37 @@ fn main() -> ! {
 
         rprintln!("Pins configured.");
 
-        let mut spi1 = device_peripherals.SPI1.spi(
-            (spi_clock, spi_miso, spi_mosi),
-            Mode {
-                polarity: Polarity::IdleLow,
-                phase: Phase::CaptureOnFirstTransition,
-            },
-            3.MHz(),
-            &clocks,
-        ).to_bidi_transfer_mode();
+        let mut spi1 = device_peripherals.SPI1
+            .spi(
+                (spi_clock, spi_miso, spi_mosi),
+                Mode {
+                    polarity: Polarity::IdleLow,
+                    phase: Phase::CaptureOnFirstTransition,
+                },
+                250.kHz(),
+                &clocks,
+            )
+            .frame_size_16bit();
 
-        rprintln!("SPI1 configured.");
+        rprintln!("SPI configured.");
 
-        let mut buffer = [0u8; 1];
-        buffer[0] = 0x88;
+        let mut buffer = [0u16; 4];
+        let mut tmp = Clone::clone(&buffer);
 
-        while !spi1.is_tx_empty() {}
-
-        match spi1.transfer(&mut buffer) {
-            Ok(received) => { rprintln!("Write Ok: {:?}", received) }
-            Err(cause) => { rprintln!("Write Err: {:?}", cause) }
-        };
-
-        // while spi1.is_busy() {
-        //     rprintln!("BUSY")
-        // }
-
-        // spi_cs.set_low();
-
-        // buffer[0] = 0x007F;
-        // match spi.transfer(&mut buffer) {
-        //     Ok(received) => rprintln!("Configuration Ok: {:#06x}", received[0]),
-        //     Err(cause) => rprintln!("Configuration Err: {:?}", cause),
-        // }
-        //
-        // delay.delay_ms(200u8);
-        //
-        // buffer[0] = 0xFFFF;
-        // match spi.transfer(&mut buffer) {
-        //     Ok(received) => rprintln!("Brightness Ok: {:#06x}", received[0]),
-        //     Err(cause) => rprintln!("Brightness Err: {:?}", cause),
-        // }
-        //
-        // delay.delay_ms(200u8);
-        //
-        // buffer[0] = 0xFFFF;
-        // match spi.transfer(&mut buffer) {
-        //     Ok(received) => rprintln!("Global Latch Ok: {:#06x}", received[0]),
-        //     Err(cause) => rprintln!("Global Latch Err: {:?}", cause),
-        // }
-        //
-        // delay.delay_ms(200u8);
-        //
-        // buffer[0] = 0x0001;
-        // match spi.transfer(&mut buffer) {
-        //     Ok(received) => rprintln!("Switch Control Ok: {:#06x}", received[0]),
-        //     Err(cause) => rprintln!("Switch Control Err: {:?}", cause),
-        // }
-        //
-        // delay.delay_ms(200u8);
-        //
-        // spi_cs.set_high();
+        buffer[0] = 0x1A2B;
+        buffer[1] = 0x3C4D;
+        buffer[2] = 0xFF11;
+        buffer[3] = 0x1001;
 
         loop {
-            rprintln!("Hello");
+            tmp = Clone::clone(&buffer);
+            match spi1.transfer(&mut tmp) {
+                Ok(received) => { rprintln!("Write Ok: {:?}", received) }
+                Err(cause) => { rprintln!("Write Err: {:?}", cause) }
+            };
+
+            while spi1.is_busy() {}
+
             delay.delay_ms(1000u32);
         }
     }
