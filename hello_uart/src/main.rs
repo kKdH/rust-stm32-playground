@@ -9,13 +9,14 @@ use stm32f4xx_hal as hal;
 use crate::hal::{pac, prelude::*};
 
 use rtt_target::{rprintln, rtt_init_print};
-use stm32f4xx_hal::serial::Config;
+use stm32f4xx_hal::block;
+use stm32f4xx_hal::pac::USART2;
+use stm32f4xx_hal::serial::{Config, Rx};
 use stm32f4xx_hal::serial::config::{DmaConfig, Parity, StopBits, WordLength};
 use stm32f4xx_hal::time::Bps;
 
 #[entry]
 fn main() -> ! {
-
     rtt_init_print!();
 
     let dp = pac::Peripherals::take().unwrap();
@@ -34,16 +35,28 @@ fn main() -> ! {
         stopbits: StopBits::STOP1,
         dma: DmaConfig::None,
     };
+
     let tx_pin = gpio_a.pa9.into_alternate();
-    let mut tx = dp.USART1.tx(tx_pin, config, &clocks).unwrap();
+    let rx_pin = gpio_a.pa10.into_alternate();
+
+    let serial = dp.USART1.serial(
+        (tx_pin, rx_pin),
+        config,
+        &clocks,
+    ).unwrap();
+
+    let (mut tx, mut rx) = serial.split();
 
     rprintln!("Started");
 
     let mut value: u8 = 0;
     loop {
-        tx.write(value).unwrap();
-        rprintln!("Wrote value: {}", value);
-        value = value.wrapping_add(1);
-        delay.delay(20.millis());
+        block!(tx.write(value)).unwrap();
+        rprintln!("Sent {}", value);
+
+        value = block!(rx.read()).unwrap();
+        rprintln!("Received {}", value);
+
+        delay.delay(1000.millis());
     }
 }
