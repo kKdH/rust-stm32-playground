@@ -9,3 +9,5 @@ cortex-m-rt.workspace = true
 panic-halt.workspace = true
 rtt-target = { workspace = true, features = ["cortex-m"]  }
 stm32f4xx-hal = { workspace = true, features = ["rt", "stm32f446"] }
+postcard = "1.0.0"
+serde = { version = "1.0.*", default-features = false }

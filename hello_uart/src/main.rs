@@ -1,6 +1,7 @@
 #![no_main]
 #![no_std]
 
+use cortex_m::register::control::Npriv::Privileged;
 use panic_halt as _;
 
 use cortex_m_rt::entry;
@@ -14,6 +15,13 @@ use stm32f4xx_hal::pac::USART2;
 use stm32f4xx_hal::serial::{Config, Rx};
 use stm32f4xx_hal::serial::config::{DmaConfig, Parity, StopBits, WordLength};
 use stm32f4xx_hal::time::Bps;
+
+
+#[derive(serde::Serialize, serde::Deserialize, Debug, Eq, PartialEq)]
+struct Data {
+    id: u32,
+    //message: &'a str,
+}
 
 #[entry]
 fn main() -> ! {
@@ -50,13 +58,40 @@ fn main() -> ! {
     rprintln!("Started");
 
     let mut value: u8 = 0;
+    let mut buffer = [0u8; core::mem::size_of::<Data>()];
     loop {
-        block!(tx.write(value)).unwrap();
-        rprintln!("Sent {}", value);
+
+        let data = Data {
+            id: 98243
+        };
+
+        let bytes = match postcard::to_slice(&data, &mut buffer) {
+            Ok(bytes) => {
+                rprintln!("successfully serialized data into byte array.");
+                bytes
+            }
+            Err(_) => {
+                rprintln!("failed to serialize data into byte array.");
+                continue
+            }
+        };
+            //expect("Failed to encode data as bytes");
+
+        match tx.bwrite_all(&bytes) {
+            Ok(_) => {
+                rprintln!("successfully wrote data into buffer.");
+            }
+            Err(_) => {
+                rprintln!("failed to write data into buffer")
+            }
+        };
+
+        //block!(tx.write(value)).unwrap();
+        //rprintln!("Sent {}", value);
 
         value = block!(rx.read()).unwrap();
         rprintln!("Received {}", value);
 
-        delay.delay(1000.millis());
+        //delay.delay(1000.millis());
     }
 }
