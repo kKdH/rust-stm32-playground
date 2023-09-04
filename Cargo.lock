@@ -40,9 +40,27 @@ checksum = "46afbd2983a5d5a7bd740ccb198caf5b82f45c40c09c0eed36052d91cb92e719"
 
 [[package]]
 name = "bitflags"
+version = "1.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a"
+
+[[package]]
+name = "bitflags"
 version = "2.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b4682ae6287fcf752ecaabbfcc7b6f9b72aa33933dc23a554d853aea8eea8635"
+
+[[package]]
+name = "bxcan"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "40ac3d0c0a542d0ab5521211f873f62706a7136df415676f676d347e5a41dd80"
+dependencies = [
+ "bitflags 1.3.2",
+ "embedded-hal 0.2.7",
+ "nb 1.1.0",
+ "vcell",
+]
 
 [[package]]
 name = "byteorder"
@@ -284,6 +302,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "hello_tja1051"
+version = "0.1.0"
+dependencies = [
+ "bxcan",
+ "cortex-m",
+ "cortex-m-rt",
+ "panic-halt",
+ "rtt-target",
+ "stm32f4xx-hal",
+]
+
+[[package]]
 name = "hello_tracker"
 version = "0.1.0"
 dependencies = [
@@ -486,7 +516,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c35360daaceb356866a3f840e845dd09c1ef69aed52637520b4c5c409c10cdc0"
 dependencies = [
  "bare-metal 1.0.0",
- "bitflags",
+ "bitflags 2.4.0",
+ "bxcan",
  "cortex-m",
  "cortex-m-rt",
  "embedded-dma",

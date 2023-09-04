@@ -5,16 +5,17 @@ edition = "2021"
 
 [workspace]
 members = [
+    "hello_analog_potentiometer",
+    "hello_can",
+    "hello_led",
     "hello_led_btn_isr",
     "hello_ms8607",
+    "hello_rotary_encoder",
     "hello_spi",
     "hello_spi_display",
     "hello_spi_reciever",
-    "hello_led",
     "hello_srf05",
     "hello_tracker",
-    "hello_analog_potentiometer",
-    "hello_rotary_encoder",
     "hello_uart"
 ]
 
@@ -22,6 +23,7 @@ members = [
 edition = "2021"
 
 [workspace.dependencies]
+bxcan = "0.7.0"
 cortex-m = "0.7.7"
 cortex-m-rt = "0.7.3"
 panic-halt = "0.2.0"

@@ -190,18 +190,12 @@ fn main() -> ! {
     let clocks = rcc.cfgr.sysclk(84.MHz()).freeze();
 
     let gpio_b = device_peripherals.GPIOB.split();
-    let gpio_c = device_peripherals.GPIOC.split();
 
     let mut i2c = {
         let scl = gpio_b.pb8.into_alternate_open_drain::<4>();
         let sda = gpio_b.pb9.into_alternate_open_drain::<4>();
         device_peripherals.I2C1.i2c((scl, sda), 400.kHz(), &clocks)
     };
-
-    let mut button = gpio_c.pc13.into_pull_up_input();
-    button.make_interrupt_source(&mut sys_cfg);
-    button.enable_interrupt(&mut device_peripherals.EXTI);
-    button.trigger_on_edge(&mut device_peripherals.EXTI, Edge::Rising);
 
     rprintln!("Initialized");
 
