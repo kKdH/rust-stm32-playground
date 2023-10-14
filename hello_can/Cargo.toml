@@ -1,5 +1,5 @@
 [package]
-name = "hello_tja1051"
+name = "hello_can"
 version = "0.1.0"
 edition.workspace = true
 
@@ -9,4 +9,11 @@ cortex-m = { workspace = true }
 cortex-m-rt = { workspace = true }
 panic-halt = { workspace = true }
 rtt-target = { workspace = true, features = ["cortex-m"]  }
-stm32f4xx-hal = { workspace = true, features = ["stm32f446", "rt", "can"] }
+
+stm32f4xx-hal = { workspace = true, optional = true, features = ["stm32f446", "rt", "can"] }
+stm32f3xx-hal = { workspace = true, optional = true, features = ["stm32f303x8", "rt", "can", "ld"] }
+
+[features]
+default = []
+stm32f446 = ["dep:stm32f4xx-hal"]
+stm32f303x8 = ["dep:stm32f3xx-hal"]

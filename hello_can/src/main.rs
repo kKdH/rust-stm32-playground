@@ -2,16 +2,21 @@
 #![no_std]
 
 use bxcan::filter::Mask32;
-use bxcan::{Fifo, Frame, StandardId};
+use bxcan::{Frame, StandardId};
 use cortex_m_rt::entry;
 use rtt_target::{rprintln, rtt_init_print};
-use stm32f4xx_hal::{block, pac, prelude::*};
+
+use stm32f3xx_hal as hal;
+use hal::pac;
+use hal::prelude::*;
+use hal::block;
 
 #[allow(unused_imports)]
 use panic_halt as _;
 
 #[entry]
 fn main() -> ! {
+
     let core_peripherals = cortex_m::Peripherals::take().unwrap();
     let device_peripherals = pac::Peripherals::take().unwrap();
 
@@ -19,49 +24,59 @@ fn main() -> ! {
 
     rprintln!("Initializing");
 
-    let _sys_cfg = device_peripherals.SYSCFG.constrain();
-    let rcc = device_peripherals.RCC.constrain();
-    let clocks = rcc.cfgr
-        .use_hse(26.MHz())
-        .freeze();
+    let mut flash = device_peripherals.FLASH.constrain();
+    let mut rcc = device_peripherals.RCC.constrain();
+    let clocks = rcc
+        .cfgr
+        .use_hse(32.MHz())
+        .hclk(64.MHz())
+        .sysclk(64.MHz())
+        .pclk1(32.MHz())
+        .pclk2(64.MHz())
+        .freeze(&mut flash.acr);
 
     rprintln!("Clocks initialized");
 
-    let mut delay = device_peripherals.TIM1.delay_us(&clocks);
+    let mut delay = hal::delay::Delay::new(core_peripherals.SYST, clocks);
 
-    let gpio_b = device_peripherals.GPIOB.split();
+    let mut gpio_a = device_peripherals.GPIOA.split(&mut rcc.ahb);
+    let _gpio_b = device_peripherals.GPIOB.split(&mut rcc.ahb);
 
     let mut can = {
 
         let mut can_1 = {
-            let rx = gpio_b.pb8;
-            let tx = gpio_b.pb9;
-            let can = device_peripherals.CAN1.can((tx, rx));
-            bxcan::Can::builder(can)
-                .set_bit_timing(0x0019_0003)
+            let rx = gpio_a.pa11
+                .into_af_push_pull::<9>(&mut gpio_a.moder, &mut gpio_a.otyper, &mut gpio_a.afrh);
+            let tx = gpio_a.pa12
+                .into_af_push_pull::<9>(&mut gpio_a.moder, &mut gpio_a.otyper, &mut gpio_a.afrh);
+            bxcan::Can::builder(hal::can::Can::new(device_peripherals.CAN, tx, rx, &mut rcc.apb1))
+                .set_bit_timing(0x001c_0003)
+                .set_loopback(false)
+                .set_silent(false)
                 .leave_disabled()
         };
 
         {
             let mut filters = can_1.modify_filters();
-            filters.set_split(14); // 28 filters are shared between the two CAN instances.
-            filters.enable_bank(0, Fifo::Fifo0, Mask32::accept_all());
+            // filters.set_split(14); // 28 filters are shared between the two CAN instances.
+            filters.enable_bank(0, Mask32::accept_all());
 
-            let mut slave_filters = filters.slave_filters();
-            slave_filters.enable_bank(14, Fifo::Fifo0, Mask32::accept_all());
+            // let mut slave_filters = filters.slave_filters();
+            // slave_filters.enable_bank(14, Fifo::Fifo0, Mask32::accept_all());
         }
 
-        let can_2 = {
-            let rx = gpio_b.pb5;
-            let tx = gpio_b.pb6;
-            let can = device_peripherals.CAN2.can((tx, rx));
-            bxcan::Can::builder(can)
-                .set_bit_timing(0x0019_0003)
-                .set_loopback(true)
-                .enable()
-        };
+        // let can_2 = {
+        //     let rx = gpio_b.pb5;
+        //     let tx = gpio_b.pb6;
+        //     let can = device_peripherals.CAN2.can((tx, rx));
+        //     bxcan::Can::builder(can)
+        //         .set_bit_timing(0x0019_0003)
+        //         .set_loopback(true)
+        //         .enable()
+        // };
 
-        can_2
+        block!(can_1.enable_non_blocking()).ok();
+        can_1
     };
 
     rprintln!("CAN initialized");

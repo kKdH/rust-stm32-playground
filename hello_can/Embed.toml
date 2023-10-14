@@ -1,5 +1,5 @@
 [default.general]
-chip = "stm32f446re"
+#chip = "stm32f446retx"
 
 [default.rtt]
 enabled = true
